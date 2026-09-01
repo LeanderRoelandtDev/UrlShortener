@@ -3,15 +3,15 @@ using UrlShortener.Infrastructure;
 
 namespace UrlShortener.Api.Installers
 {
-    public static class ProjectDepenciesInstaller
+    public static class ProjectDependenciesInstaller
     {
-        public static WebApplicationBuilder InstallProjectDepencies(this WebApplicationBuilder builder)
+        public static WebApplicationBuilder InstallProjectDependencies(this WebApplicationBuilder builder)
         {
             var services = builder.Services;
 
             //Depency injection of services per project
             services.AddCore();
-            services.AddInfrastructure();
+            services.AddInfrastructure(builder.Configuration);
 
             return builder;
         }

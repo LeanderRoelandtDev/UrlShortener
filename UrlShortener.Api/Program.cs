@@ -1,4 +1,5 @@
 using UrlShortener.Api.Installers;
+using UrlShortener.Infrastructure.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.InstallSwagger()
-       .InstallProjectDepencies();
+       .InstallProjectDependencies();
 
 
 var app = builder.Build();
@@ -18,6 +19,13 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    using var scope = app.Services.CreateScope();
+
+    var db = scope.ServiceProvider
+        .GetRequiredService<UrlShortenerDbContext>();
+
+    Console.WriteLine(db.Database.CanConnect());
 }
 
 app.UseHttpsRedirection();
