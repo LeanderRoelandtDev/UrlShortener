@@ -24,8 +24,9 @@ namespace UrlShortener.Infrastructure.Migrations
 
             modelBuilder.Entity("UrlShortener.Infrastructure.DomainModels.Url", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<int>("ClickCount")
                         .HasColumnType("integer");
@@ -45,6 +46,9 @@ namespace UrlShortener.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
 
                     b.ToTable("Urls");
                 });

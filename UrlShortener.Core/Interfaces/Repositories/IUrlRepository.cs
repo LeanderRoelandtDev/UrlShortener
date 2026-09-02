@@ -7,6 +7,7 @@ namespace UrlShortener.Core.Interfaces.Repositories
 {
     public interface IUrlRepository
     {
-        bool Save(string url);
+        Task<bool> IsDuplicate(string code);
+        Task<bool> SaveUrl(string url, string code);
     }
 }
