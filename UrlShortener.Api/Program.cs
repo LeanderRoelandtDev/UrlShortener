@@ -19,13 +19,6 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI();
-
-    using var scope = app.Services.CreateScope();
-
-    var db = scope.ServiceProvider
-        .GetRequiredService<UrlShortenerDbContext>();
-
-    Console.WriteLine(db.Database.CanConnect());
 }
 
 app.UseHttpsRedirection();

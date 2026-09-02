@@ -6,13 +6,13 @@ namespace UrlShortener.Infrastructure.Context
 {
     public class UrlShortenerDbContext(DbContextOptions<UrlShortenerDbContext> options) : DbContext(options)
     {
-        internal DbSet<Url> Urls { get; set; }
+        internal DbSet<UrlEntity> UrlEntities{ get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Url>()
-                .HasIndex(x => x.Code)
+            modelBuilder.Entity<UrlEntity>()
+                .HasIndex(x => x.ShortUrl)
                 .IsUnique();
         }
     }

@@ -8,12 +8,20 @@ namespace UrlShortener.Api.Controllers
     [ApiController]
     public class UrlController(IUrlService urlService) : ControllerBase
     {
-        [HttpPost]
-        public async Task<IActionResult> Save([FromBody] CreateShortUrlRequest request)
+        [HttpGet]
+        public async Task<IActionResult> GetOriginalUrl([FromBody] GetOriginalUrlRequest request)
         {
-            await urlService.Save(request);
+            string originalUrl = await urlService.GetOriginalUrl(request.ShortUrl);
+
+            return Ok(originalUrl);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CreateShortUrlRequest request)
+        {
+            string shortUrl = await urlService.Create(request);
             
-            return Ok();
+            return Ok(shortUrl);
         }
     }
 }

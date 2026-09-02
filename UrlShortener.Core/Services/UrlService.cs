@@ -8,24 +8,35 @@ namespace UrlShortener.Core.Services
 {
     internal class UrlService(IUrlRepository urlRepository) : IUrlService
     {
-        public async Task<bool> Save(CreateShortUrlRequest request)
+        public async Task<string> GetOriginalUrl(string shortUrl)
         {
-            string generatedCode = GenerateRandomCode();
+            string originalUrl = await urlRepository.GetOriginalUrl(shortUrl);
 
-            if (await urlRepository.IsDuplicate(generatedCode))
+            if (originalUrl == null)
             {
-                generatedCode = GenerateRandomCode();
+                throw new Exception("Original url not found");
+            }
 
-                if (await urlRepository.IsDuplicate(generatedCode))
+            return originalUrl;
+        }
+
+        public async Task<string> Create(CreateShortUrlRequest request)
+        {
+            string generatedShortUrl = GenerateRandomCode();
+
+            if (await urlRepository.IsDuplicate(generatedShortUrl))
+            {
+                generatedShortUrl = GenerateRandomCode();
+
+                if (await urlRepository.IsDuplicate(generatedShortUrl))
                 {
                     throw new InvalidOperationException("Failed to generate a unique short code.");
                 }
             }
 
-            await urlRepository.SaveUrl(request.Url, generatedCode);
+            return await urlRepository.Create(request.Url, generatedShortUrl);
 
             //Implements eror handling
-            return true;
         }
 
         private string GenerateRandomCode()

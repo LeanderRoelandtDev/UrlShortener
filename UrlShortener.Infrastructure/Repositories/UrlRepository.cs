@@ -1,7 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using UrlShortener.Core.Interfaces.Repositories;
 using UrlShortener.Infrastructure.Context;
 using UrlShortener.Infrastructure.DomainModels;
@@ -10,23 +7,37 @@ namespace UrlShortener.Infrastructure.Repositories
 {
     internal class UrlRepository(UrlShortenerDbContext db) : IUrlRepository
     {
-        public async Task<bool> IsDuplicate(string code)
+        public async Task<string> GetOriginalUrl(string shortUrl)
         {
-            return await db.Urls.AnyAsync(url => url.Code == code);
+            UrlEntity urlEntity = await db.UrlEntities.FirstOrDefaultAsync(url => url.ShortUrl == shortUrl);
+
+            return urlEntity?.OriginalUrl;
         }
 
-        public async Task<bool> SaveUrl(string url, string code)
+        public async Task<bool> IsDuplicate(string code)
         {
-            Url newUrl = new Url
+            return await db.UrlEntities.AnyAsync(url => url.ShortUrl == code);
+        }
+
+        public async Task<string> Create(string url, string shortUrl)
+        {
+            UrlEntity newUrl = new UrlEntity
             {
                 OriginalUrl = url,
-                Code = code,
+                ShortUrl = shortUrl,
                 CreatedAt = DateTime.UtcNow,
                 ExpiresAt = DateTime.UtcNow.AddDays(7)
             };
 
-            await db.Urls.AddAsync(newUrl);
-            return await db.SaveChangesAsync() > 0;
+            await db.UrlEntities.AddAsync(newUrl);
+            int updatedRows = await db.SaveChangesAsync();
+            if (updatedRows > 0)
+            {
+                return newUrl.ShortUrl;
+
+            }
+
+            throw new Exception("Something went wrong creating a UrlEntity");
         }
     }
 }

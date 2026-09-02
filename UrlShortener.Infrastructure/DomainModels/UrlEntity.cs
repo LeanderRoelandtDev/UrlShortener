@@ -1,10 +1,9 @@
-﻿
-namespace UrlShortener.Infrastructure.DomainModels
+﻿namespace UrlShortener.Infrastructure.DomainModels
 {
-    internal class Url
+    internal class UrlEntity
     {
         public Guid Id { get; set; }
-        public string Code { get; set; }
+        public string ShortUrl { get; set; }
         public string OriginalUrl { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime ExpiresAt { get; set; }

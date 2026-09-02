@@ -12,7 +12,7 @@ using UrlShortener.Infrastructure.Context;
 namespace UrlShortener.Infrastructure.Migrations
 {
     [DbContext(typeof(UrlShortenerDbContext))]
-    [Migration("20260902190523_InitialCreate")]
+    [Migration("20260902200927_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace UrlShortener.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("UrlShortener.Infrastructure.DomainModels.Url", b =>
+            modelBuilder.Entity("UrlShortener.Infrastructure.DomainModels.UrlEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -33,10 +33,6 @@ namespace UrlShortener.Infrastructure.Migrations
 
                     b.Property<int>("ClickCount")
                         .HasColumnType("integer");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -48,12 +44,16 @@ namespace UrlShortener.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("ShortUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("Code")
+                    b.HasIndex("ShortUrl")
                         .IsUnique();
 
-                    b.ToTable("Urls");
+                    b.ToTable("UrlEntities");
                 });
 #pragma warning restore 612, 618
         }

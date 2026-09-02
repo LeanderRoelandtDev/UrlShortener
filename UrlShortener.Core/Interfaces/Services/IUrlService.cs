@@ -7,6 +7,7 @@ namespace UrlShortener.Core.Interfaces.Services
 {
     public interface IUrlService
     {
-        Task<bool> Save(CreateShortUrlRequest request);
+        Task<string> GetOriginalUrl(string shortUrl);
+        Task<string> Create(CreateShortUrlRequest request);
     }
 }

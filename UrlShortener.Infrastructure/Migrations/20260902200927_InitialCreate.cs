@@ -12,11 +12,11 @@ namespace UrlShortener.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Urls",
+                name: "UrlEntities",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Code = table.Column<string>(type: "text", nullable: false),
+                    ShortUrl = table.Column<string>(type: "text", nullable: false),
                     OriginalUrl = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ExpiresAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -24,13 +24,13 @@ namespace UrlShortener.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Urls", x => x.Id);
+                    table.PrimaryKey("PK_UrlEntities", x => x.Id);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Urls_Code",
-                table: "Urls",
-                column: "Code",
+                name: "IX_UrlEntities_ShortUrl",
+                table: "UrlEntities",
+                column: "ShortUrl",
                 unique: true);
         }
 
@@ -38,7 +38,7 @@ namespace UrlShortener.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Urls");
+                name: "UrlEntities");
         }
     }
 }
