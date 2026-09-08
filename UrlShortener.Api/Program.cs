@@ -1,3 +1,4 @@
+using UrlShortener.Api.Exceptions;
 using UrlShortener.Api.Installers;
 using UrlShortener.Infrastructure.Context;
 
@@ -10,8 +11,13 @@ builder.Services.AddControllers();
 builder.InstallSwagger()
        .InstallProjectDependencies();
 
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<ExceptionHandler>();
+
 
 var app = builder.Build();
+
+app.UseExceptionHandler();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

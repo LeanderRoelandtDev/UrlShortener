@@ -8,7 +8,7 @@ namespace UrlShortener.Api.Controllers
     [ApiController]
     public class UrlController(IUrlService urlService) : ControllerBase
     {
-        [HttpGet]
+        [HttpPost("GetOriginalUrl")]
         public async Task<IActionResult> GetOriginalUrl([FromBody] GetOriginalUrlRequest request)
         {
             string originalUrl = await urlService.GetOriginalUrl(request.ShortUrl);
@@ -16,7 +16,7 @@ namespace UrlShortener.Api.Controllers
             return Ok(originalUrl);
         }
 
-        [HttpPost]
+        [HttpPost("CreateShortUrl")]
         public async Task<IActionResult> Create([FromBody] CreateShortUrlRequest request)
         {
             string shortUrl = await urlService.Create(request);

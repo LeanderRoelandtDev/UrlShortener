@@ -1,5 +1,6 @@
 ﻿
 using System.CodeDom.Compiler;
+using UrlShortener.Core.Exceptions;
 using UrlShortener.Core.Interfaces.Repositories;
 using UrlShortener.Core.Interfaces.Services;
 using UrlShortener.Dtos.Url.Request;
@@ -14,7 +15,7 @@ namespace UrlShortener.Core.Services
 
             if (originalUrl == null)
             {
-                throw new Exception("Original url not found");
+                throw ErrorException.NotFound("Couldnt not find any url with the provided code");
             }
 
             return originalUrl;
@@ -30,13 +31,11 @@ namespace UrlShortener.Core.Services
 
                 if (await urlRepository.IsDuplicate(generatedShortUrl))
                 {
-                    throw new InvalidOperationException("Failed to generate a unique short code.");
+                    throw ErrorException.AlreadyExists("Unable to create an unique short url");
                 }
             }
 
             return await urlRepository.Create(request.Url, generatedShortUrl);
-
-            //Implements eror handling
         }
 
         private string GenerateRandomCode()
