@@ -11,7 +11,7 @@ namespace UrlShortener.Api.Installers
 
             //Depency injection of services per project
             services.AddCore();
-            services.AddInfrastructure(builder.Configuration);
+            services.AddInfrastructure(builder.Configuration, builder.Environment);
 
             return builder;
         }

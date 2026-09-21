@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using UrlShortener.Core.Interfaces.Repositories;
 using UrlShortener.Infrastructure.Context;
@@ -9,7 +10,7 @@ namespace UrlShortener.Infrastructure
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration, IHostEnvironment environment)
         {
             //Database Context
             var connectionString = configuration.GetConnectionString(nameof(UrlShortenerDbContext));

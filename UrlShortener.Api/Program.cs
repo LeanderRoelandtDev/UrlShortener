@@ -1,6 +1,5 @@
 using UrlShortener.Api.Exceptions;
 using UrlShortener.Api.Installers;
-using UrlShortener.Infrastructure.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,3 +33,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }
