@@ -1,10 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using UrlShortener.Infrastructure.DomainModels;
 
 namespace UrlShortener.Infrastructure.Context
 {
-    public class UrlShortenerDbContext(DbContextOptions<UrlShortenerDbContext> options) : DbContext(options)
+    internal class UrlShortenerDbContext(DbContextOptions<UrlShortenerDbContext> options) : IdentityUserContext<ApplicationUser, Guid>(options)
     {
         internal DbSet<UrlEntity> UrlEntities{ get; set; }
 
