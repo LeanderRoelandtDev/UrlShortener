@@ -26,6 +26,7 @@ namespace UrlShortener.Infrastructure
 
             //Services
             services.AddScoped<IUrlRepository, UrlRepository>();
+            services.AddScoped<IAuthRepository, AuthRepository>();
 
             return services;
         }

@@ -9,6 +9,7 @@ namespace UrlShortener.Core
         public static IServiceCollection AddCore(this IServiceCollection services)
         {
             services.AddScoped<IUrlService, UrlService>();
+            services.AddScoped<IAuthService, AuthService>();
 
             return services;
         }
