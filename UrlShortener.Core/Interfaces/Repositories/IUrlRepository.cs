@@ -9,6 +9,6 @@ namespace UrlShortener.Core.Interfaces.Repositories
     {
         Task<string> GetOriginalUrl(string shortUrl);
         Task<bool> IsDuplicate(string shortUrl);
-        Task<string> Create(string url, string shortUrl);
+        Task<string> Create(string url, string shortUrl, Guid userId);
     }
 }

@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using UrlShortener.Core.Exceptions;
 using UrlShortener.Core.Interfaces.Services;
 using UrlShortener.Dtos.Url.Request;
 
 namespace UrlShortener.Api.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UrlController(IUrlService urlService) : ControllerBase
@@ -18,12 +19,30 @@ namespace UrlShortener.Api.Controllers
             return Ok(originalUrl);
         }
 
+
+        [Authorize]
         [HttpPost("CreateShortUrl")]
         public async Task<IActionResult> Create([FromBody] CreateShortUrlRequest request)
         {
-            string shortUrl = await urlService.Create(request);
+            Guid userId = GetUserId();
+
+            string shortUrl = await urlService.Create(request, userId);
             
             return Ok(shortUrl);
+        }
+
+
+
+        private Guid GetUserId()
+        {
+            string userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                                    ?? User.FindFirstValue("sub")
+                                    ?? throw ErrorException.BadRequest("User ID claim is missing.");
+
+            if (!Guid.TryParse(userIdClaim, out Guid userId))
+                throw ErrorException.BadRequest("User ID claim is not a valid GUID.");
+
+            return userId;
         }
     }
 }

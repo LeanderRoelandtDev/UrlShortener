@@ -19,7 +19,8 @@ namespace UrlShortener.Infrastructure.Repositories
         {
             ApplicationUser newDbUser = new ApplicationUser
             {
-                UserName = newUser.UserName
+                UserName = newUser.UserName,
+                Email = newUser.Email
             };
 
             IdentityResult dbResult = await userManager.CreateAsync(newDbUser, password);

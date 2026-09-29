@@ -19,14 +19,15 @@ namespace UrlShortener.Infrastructure.Repositories
             return await db.UrlEntities.AnyAsync(url => url.ShortUrl == code);
         }
 
-        public async Task<string> Create(string url, string shortUrl)
+        public async Task<string> Create(string url, string shortUrl, Guid userId)
         {
             UrlEntity newUrl = new UrlEntity
             {
                 OriginalUrl = url,
                 ShortUrl = shortUrl,
                 CreatedAt = DateTime.UtcNow,
-                ExpiresAt = DateTime.UtcNow.AddDays(7)
+                ExpiresAt = DateTime.UtcNow.AddDays(7),
+                ApplicationUserId = userId
             };
 
             await db.UrlEntities.AddAsync(newUrl);

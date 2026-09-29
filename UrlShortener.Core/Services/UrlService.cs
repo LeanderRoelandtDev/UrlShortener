@@ -21,7 +21,7 @@ namespace UrlShortener.Core.Services
             return originalUrl;
         }
 
-        public async Task<string> Create(CreateShortUrlRequest request)
+        public async Task<string> Create(CreateShortUrlRequest request, Guid userId)
         {
             string generatedShortUrl = GenerateRandomCode();
 
@@ -35,7 +35,7 @@ namespace UrlShortener.Core.Services
                 }
             }
 
-            return await urlRepository.Create(request.Url, generatedShortUrl);
+            return await urlRepository.Create(request.Url, generatedShortUrl, userId);
         }
 
         private string GenerateRandomCode()
