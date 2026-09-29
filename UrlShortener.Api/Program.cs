@@ -3,7 +3,10 @@ using UrlShortener.Api.Installers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+if (builder.Environment.IsEnvironment("Testing"))
+{
+    builder.InstallTestingSetup();
+}
 
 builder.Services.AddControllers();
 
