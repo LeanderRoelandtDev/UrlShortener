@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using UrlShortener.Core.Interfaces.Services;
 using UrlShortener.Dtos.Url.Request;
 
 namespace UrlShortener.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UrlController(IUrlService urlService) : ControllerBase

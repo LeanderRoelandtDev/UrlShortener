@@ -16,7 +16,7 @@ namespace UrlShortener.Api.Controllers
         {
             LoginResponse result = await authService.Login(request);
 
-            return Ok();
+            return Ok(result);
         }
 
         [HttpPost("register")]
