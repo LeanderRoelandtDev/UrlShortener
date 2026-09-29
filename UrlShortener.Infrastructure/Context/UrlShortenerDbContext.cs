@@ -11,6 +11,8 @@ namespace UrlShortener.Infrastructure.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<UrlEntity>()
                 .HasIndex(x => x.ShortUrl)
                 .IsUnique();

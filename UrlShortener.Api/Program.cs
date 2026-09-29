@@ -11,7 +11,9 @@ if (builder.Environment.IsEnvironment("Testing"))
 builder.Services.AddControllers();
 
 builder.InstallSwagger()
-       .InstallProjectDependencies();
+       .InstallProjectDependencies()
+       .InstallAuth();
+
 
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ExceptionHandler>();

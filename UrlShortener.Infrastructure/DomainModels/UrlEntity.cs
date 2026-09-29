@@ -3,10 +3,13 @@
     internal class UrlEntity
     {
         public Guid Id { get; set; }
-        public string ShortUrl { get; set; }
-        public string OriginalUrl { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime ExpiresAt { get; set; }
+        public required string ShortUrl { get; set; }
+        public required string OriginalUrl { get; set; }
+        public required DateTime CreatedAt { get; set; }
+        public required DateTime ExpiresAt { get; set; }
         public int ClickCount { get; set; } = 0;
+        public required Guid ApplicationUserId { get; set; }
+
+        public ApplicationUser? ApplicationUser { get; set; }
     }
 }

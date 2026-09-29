@@ -11,20 +11,20 @@ namespace UrlShortener.Api.Controllers
     [ApiController]
     public class AuthController(IAuthService authService) : ControllerBase
     {
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
-        {
-            LoginResponse result = await authService.Login(request);
-
-            return Ok(result);
-        }
-
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             await authService.Register(request);
 
             return Ok();
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        {
+            LoginResponse result = await authService.Login(request);
+
+            return Ok(result);
         }
     }
 }
