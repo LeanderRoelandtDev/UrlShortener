@@ -1,5 +1,7 @@
 ﻿using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using UrlShortener.Dtos.Auth.Response;
 
 namespace UrlShortener.Testing.Integration.UrlIntegrationTests
 {
@@ -9,6 +11,8 @@ namespace UrlShortener.Testing.Integration.UrlIntegrationTests
         public async Task CreateUrl_ThenGetOriginalUrl_ReturnsOriginalUrl()
         {
             HttpClient client = factory.CreateClient();
+
+            await LoginUsingTestAccount(client);
 
             HttpResponseMessage responseCreateUrl = await client.PostAsJsonAsync("/api/url/CreateShortUrl", new
             {
@@ -37,6 +41,8 @@ namespace UrlShortener.Testing.Integration.UrlIntegrationTests
         {
             HttpClient client = factory.CreateClient();
 
+            await LoginUsingTestAccount(client);
+
             HttpResponseMessage response = await client.PostAsJsonAsync("/api/url/CreateShortUrl", new
             {
                 Url = "https://google.com"
@@ -58,12 +64,30 @@ namespace UrlShortener.Testing.Integration.UrlIntegrationTests
         {
             HttpClient client = factory.CreateClient();
 
+            await LoginUsingTestAccount(client);
+
             HttpResponseMessage response = await client.PostAsJsonAsync("/api/url/CreateShortUrl", new
             {
                 Url = url
             });
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+
+        private async Task<HttpClient> LoginUsingTestAccount(HttpClient client)
+        {
+            HttpResponseMessage response = await client.PostAsJsonAsync("/api/auth/login", new
+            {
+                Username = "Testing",
+                Password = "Test123!"
+            });
+
+            LoginResponse loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>() ?? throw new InvalidOperationException("LoginResponse was empty.");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loginResponse.JwtToken);
+
+            return client;
         }
     }
 }

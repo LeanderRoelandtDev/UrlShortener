@@ -15,7 +15,8 @@ namespace UrlShortener.Testing.Integration.UrlIntegrationTests
 
             var response = await client.PostAsJsonAsync("/api/url/GetOriginalUrl", new
             {
-                ShortUrl = "d1JVCQz3"
+                //If this test returns 404, Check if the this code exists in the database
+                ShortUrl = "cSOuMflD"
             });
 
             response.EnsureSuccessStatusCode();

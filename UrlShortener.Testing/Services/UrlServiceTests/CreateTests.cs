@@ -8,23 +8,27 @@ using UrlShortener.Core.Interfaces.Repositories;
 using UrlShortener.Core.Interfaces.Services;
 using UrlShortener.Core.Services;
 using UrlShortener.Dtos.Url.Request;
+using UrlShortener.Models;
 using static System.Net.WebRequestMethods;
 
 namespace UrlShortener.Testing.Services.UrlServiceTests
 {
     public class CreateTests()
     {
+        private Guid userId = new Guid("11111111-1111-1111-1111-111111111111");
+
         [Fact]
         public async Task Create_WhenCodeIsUnique()
         {
+
             //Creates mock of the UrlRepository
             Moq.Mock<IUrlRepository> repository = new Mock<IUrlRepository>();
 
             repository.Setup(x => x.IsDuplicate(It.IsAny<string>()))
                                    .ReturnsAsync(false);
 
-            repository.Setup(x => x.Create("https://google.com", It.IsAny<string>()))
-                      .ReturnsAsync((string url, string shortUrl) => shortUrl);
+            repository.Setup(x => x.Create("https://google.com", It.IsAny<string>(), userId))
+                      .ReturnsAsync((string url, string shortUrl, Guid userId) => shortUrl);
 
 
             UrlService service = new UrlService(repository.Object);
@@ -37,7 +41,7 @@ namespace UrlShortener.Testing.Services.UrlServiceTests
 
 
             //Call the method inside the UrlService and store the return
-            string result = await service.Create(request);
+            string result = await service.Create(request, userId);
 
 
             //Check if the returning url matches what i expect
@@ -54,8 +58,8 @@ namespace UrlShortener.Testing.Services.UrlServiceTests
                                    .ReturnsAsync(true)
                                    .ReturnsAsync(false);
 
-            repository.Setup(x => x.Create("https://google.com", It.IsAny<string>()))
-                      .ReturnsAsync((string url, string shortUrl) => shortUrl);
+            repository.Setup(x => x.Create("https://google.com", It.IsAny<string>(), userId))
+                      .ReturnsAsync((string url, string shortUrl, Guid userId) => shortUrl);
 
 
             UrlService service = new UrlService(repository.Object);
@@ -68,7 +72,7 @@ namespace UrlShortener.Testing.Services.UrlServiceTests
 
 
             //Call the method inside the UrlService and store the return
-            string result = await service.Create(request);
+            string result = await service.Create(request, userId);
 
             //Check if the returning url matches what i expect
             Assert.NotNull(result);
@@ -95,7 +99,7 @@ namespace UrlShortener.Testing.Services.UrlServiceTests
 
 
             //Call the method inside the UrlService and store the return
-            ErrorException exception = await Assert.ThrowsAsync<ErrorException>(() => service.Create(request));
+            ErrorException exception = await Assert.ThrowsAsync<ErrorException>(() => service.Create(request, userId));
 
             Assert.Equal(HttpStatusCode.Conflict, exception.Code);
         }
@@ -109,7 +113,7 @@ namespace UrlShortener.Testing.Services.UrlServiceTests
             repository.Setup(x => x.IsDuplicate(It.IsAny<string>()))
                                    .ReturnsAsync(false);
 
-            repository.Setup(x => x.Create("https://google.com", It.IsAny<string>()))
+            repository.Setup(x => x.Create("https://google.com", It.IsAny<string>(), userId))
                       .ThrowsAsync(new Exception("Something went wrong creating a UrlEntity"));
 
 
@@ -123,7 +127,7 @@ namespace UrlShortener.Testing.Services.UrlServiceTests
 
 
             //Call the method inside the UrlService and store the return
-            Exception exception = await Assert.ThrowsAsync<Exception>(() => service.Create(request));
+            Exception exception = await Assert.ThrowsAsync<Exception>(() => service.Create(request, userId));
 
             //Check if the returning url matches what i expect
             Assert.Equal("Something went wrong creating a UrlEntity", exception.Message);
