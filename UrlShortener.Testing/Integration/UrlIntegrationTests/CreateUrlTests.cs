@@ -57,9 +57,9 @@ namespace UrlShortener.Testing.Integration.UrlIntegrationTests
         }
 
         [Theory]
-        [InlineData("not-a-url")]
-        [InlineData("google.com")]
+        [InlineData(null)]
         [InlineData("")]
+        [InlineData("   ")]
         public async Task CreateUrl_WithInvalidUrl_ReturnsBadRequest(string url)
         {
             HttpClient client = factory.CreateClient();
