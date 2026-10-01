@@ -13,7 +13,7 @@ using static System.Net.WebRequestMethods;
 
 namespace UrlShortener.Testing.Services.UrlServiceTests
 {
-    public class CreateTests()
+    public class CreateTests
     {
         private Guid userId = new Guid("11111111-1111-1111-1111-111111111111");
 
