@@ -11,6 +11,8 @@ namespace UrlShortener.Core.Services
     {
         public async Task Register(RegisterRequest request)
         {
+            request.Username = request.Username.Trim();
+
             bool alreadyExists = await authRepository.UserExistsByEmailOrUsername(request.Email, request.Username);
 
             if (alreadyExists)
