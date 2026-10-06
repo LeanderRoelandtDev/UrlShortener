@@ -44,9 +44,9 @@ namespace UrlShortener.Core.Services
 
         public async Task Edit(EditUrlEntityRequest request, Guid userId)
         {
-            UrlEntity? existingUrlEntity = await urlRepository.GetByShortUrl(request.ShortUrl);
+            UrlEntity? existingUrlEntity = await urlRepository.GetByShortUrl(request.ShortUrl, userId);
 
-            if (existingUrlEntity is null || existingUrlEntity.UserId != userId)
+            if (existingUrlEntity is null)
             {
                 throw ErrorException.NotFound("Short URL not found");
             }
@@ -54,6 +54,19 @@ namespace UrlShortener.Core.Services
             existingUrlEntity.OriginalUrl = request.NewUrl;
 
             await urlRepository.Update(existingUrlEntity);
+        }
+
+
+        public async Task Delete(string shortUrl, Guid userId)
+        {
+            UrlEntity? existingUrl = await urlRepository.GetByShortUrl(shortUrl, userId);
+
+            if (existingUrl is null)
+            {
+                throw ErrorException.NotFound("Short URL not found");
+            }
+
+            await urlRepository.Delete(existingUrl);
         }
 
 

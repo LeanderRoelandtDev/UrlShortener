@@ -24,9 +24,7 @@ namespace UrlShortener.Api.Controllers
         [HttpPost("CreateShortUrl")]
         public async Task<IActionResult> Create([FromBody] CreateShortUrlRequest request)
         {
-            Guid userId = GetUserId();
-
-            string shortUrl = await urlService.Create(request, userId);
+            string shortUrl = await urlService.Create(request, GetUserId());
             
             return Ok(shortUrl);
         }
@@ -36,13 +34,19 @@ namespace UrlShortener.Api.Controllers
         [HttpPut("EditShortUrl")]
         public async Task<IActionResult> Edit([FromBody] EditUrlEntityRequest request)
         {
-            Guid userId = GetUserId();
-
-            await urlService.Edit(request, userId);
+            await urlService.Edit(request, GetUserId());
 
             return NoContent();
         }
 
+        [Authorize]
+        [HttpDelete("{shortUrl}")]
+        public async Task<IActionResult> Delete(string shortUrl)
+        {
+            await urlService.Delete(shortUrl, GetUserId());
+
+            return NoContent();
+        }
 
 
         private Guid GetUserId()

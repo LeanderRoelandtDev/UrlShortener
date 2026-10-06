@@ -42,9 +42,9 @@ namespace UrlShortener.Infrastructure.Repositories
         }
 
 
-        public async Task<Models.UrlEntity?> GetByShortUrl(string shortUrl)
+        public async Task<Models.UrlEntity?> GetByShortUrl(string shortUrl, Guid userId)
         {
-            UrlEntity? entity = await db.UrlEntities.FirstOrDefaultAsync(url => url.ShortUrl == shortUrl);
+            UrlEntity? entity = await db.UrlEntities.FirstOrDefaultAsync(url => url.ShortUrl == shortUrl && url.ApplicationUserId == userId);
 
             if (entity is null)
             {
@@ -75,6 +75,21 @@ namespace UrlShortener.Infrastructure.Repositories
             if (updatedRows == 0)
             {
                 throw new Exception("Something went wrong updating a UrlEntity");
+            }
+        }
+
+
+        public async Task Delete(Models.UrlEntity urlEntity)
+        {
+            UrlEntity entity = await db.UrlEntities.FirstAsync(x => x.Id == urlEntity.Id);
+
+            db.UrlEntities.Remove(entity);
+
+            int deletedRows = await db.SaveChangesAsync();
+
+            if (deletedRows == 0)
+            {
+                throw new Exception("Something went wrong deleting a UrlEntity");
             }
         }
     }
