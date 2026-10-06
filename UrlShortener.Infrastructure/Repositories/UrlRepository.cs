@@ -26,7 +26,7 @@ namespace UrlShortener.Infrastructure.Repositories
                 OriginalUrl = url,
                 ShortUrl = shortUrl,
                 CreatedAt = DateTime.UtcNow,
-                ExpiresAt = DateTime.UtcNow.AddDays(7),
+                UpdatedAt = DateTime.UtcNow,
                 ApplicationUserId = userId
             };
 
