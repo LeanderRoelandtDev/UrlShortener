@@ -9,5 +9,6 @@ namespace UrlShortener.Core.Interfaces.Services
     {
         Task<string> GetOriginalUrl(string shortUrl);
         Task<string> Create(CreateShortUrlRequest request, Guid userId);
+        Task Edit(EditUrlEntityRequest request, Guid userId);
     }
 }

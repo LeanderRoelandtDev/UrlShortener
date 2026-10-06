@@ -40,5 +40,42 @@ namespace UrlShortener.Infrastructure.Repositories
 
             throw new Exception("Something went wrong creating a UrlEntity");
         }
+
+
+        public async Task<Models.UrlEntity?> GetByShortUrl(string shortUrl)
+        {
+            UrlEntity? entity = await db.UrlEntities.FirstOrDefaultAsync(url => url.ShortUrl == shortUrl);
+
+            if (entity is null)
+            {
+                return null;
+            }
+
+            return new Models.UrlEntity
+            {
+                Id = entity.Id,
+                OriginalUrl = entity.OriginalUrl,
+                ShortUrl = entity.ShortUrl,
+                CreatedAt = entity.CreatedAt,
+                UpdatedAt = entity.UpdatedAt,
+                UserId = entity.ApplicationUserId
+            };
+        }
+
+
+        public async Task Update(Models.UrlEntity urlEntity)
+        {
+            UrlEntity entity = await db.UrlEntities.FirstAsync(x => x.Id == urlEntity.Id);
+
+            entity.OriginalUrl = urlEntity.OriginalUrl;
+            entity.UpdatedAt = DateTime.UtcNow;
+
+            int updatedRows = await db.SaveChangesAsync();
+
+            if (updatedRows == 0)
+            {
+                throw new Exception("Something went wrong updating a UrlEntity");
+            }
+        }
     }
 }

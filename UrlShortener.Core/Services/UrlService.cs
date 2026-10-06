@@ -1,9 +1,11 @@
 ﻿
 using System.CodeDom.Compiler;
+using System.Xml;
 using UrlShortener.Core.Exceptions;
 using UrlShortener.Core.Interfaces.Repositories;
 using UrlShortener.Core.Interfaces.Services;
 using UrlShortener.Dtos.Url.Request;
+using UrlShortener.Models;
 
 namespace UrlShortener.Core.Services
 {
@@ -21,6 +23,7 @@ namespace UrlShortener.Core.Services
             return originalUrl;
         }
 
+
         public async Task<string> Create(CreateShortUrlRequest request, Guid userId)
         {
             string generatedShortUrl = GenerateRandomCode();
@@ -37,6 +40,22 @@ namespace UrlShortener.Core.Services
 
             return await urlRepository.Create(request.Url, generatedShortUrl, userId);
         }
+
+
+        public async Task Edit(EditUrlEntityRequest request, Guid userId)
+        {
+            UrlEntity? existingUrlEntity = await urlRepository.GetByShortUrl(request.ShortUrl);
+
+            if (existingUrlEntity is null || existingUrlEntity.UserId != userId)
+            {
+                throw ErrorException.NotFound("Short URL not found");
+            }
+
+            existingUrlEntity.OriginalUrl = request.NewUrl;
+
+            await urlRepository.Update(existingUrlEntity);
+        }
+
 
         private string GenerateRandomCode()
         {
