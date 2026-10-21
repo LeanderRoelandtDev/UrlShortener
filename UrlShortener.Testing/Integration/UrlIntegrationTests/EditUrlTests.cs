@@ -15,7 +15,7 @@ namespace UrlShortener.Testing.Integration.UrlIntegrationTests
         {
             HttpClient client = factory.CreateClient();
 
-            await LoginUsingTestAccount(client);
+            await LoginUsingTestAccount(client, "Testing", "Test123!");
 
             HttpResponseMessage responseCreateUrl = await client.PostAsJsonAsync("/api/url/CreateShortUrl", new
             {
@@ -40,7 +40,7 @@ namespace UrlShortener.Testing.Integration.UrlIntegrationTests
         {
             HttpClient client = factory.CreateClient();
 
-            await LoginUsingTestAccount(client);
+            await LoginUsingTestAccount(client, "Testing", "Test123!");
 
             HttpResponseMessage responseCreateUrl = await client.PostAsJsonAsync("/api/url/CreateShortUrl", new
             {
@@ -82,7 +82,7 @@ namespace UrlShortener.Testing.Integration.UrlIntegrationTests
         {
             HttpClient client = factory.CreateClient();
 
-            await LoginUsingTestAccount(client);
+            await LoginUsingTestAccount(client, "Testing", "Test123!");
 
             HttpResponseMessage response = await client.PutAsJsonAsync("/api/url/EditShortUrl", new
             {
@@ -102,7 +102,7 @@ namespace UrlShortener.Testing.Integration.UrlIntegrationTests
         {
             HttpClient client = factory.CreateClient();
 
-            await LoginUsingTestAccount(client);
+            await LoginUsingTestAccount(client, "Testing", "Test123!");
 
             HttpResponseMessage response = await client.PutAsJsonAsync("/api/url/EditShortUrl", new
             {
@@ -118,7 +118,7 @@ namespace UrlShortener.Testing.Integration.UrlIntegrationTests
         {
             HttpClient client = factory.CreateClient();
 
-            await LoginUsingTestAccount(client);
+            await LoginUsingTestAccount(client, "Testing", "Test123!");
 
             HttpResponseMessage response = await client.PutAsJsonAsync("/api/url/EditShortUrl", new
             {
@@ -137,6 +137,7 @@ namespace UrlShortener.Testing.Integration.UrlIntegrationTests
 
             HttpResponseMessage response = await client.PutAsJsonAsync("/api/url/EditShortUrl", new
             {
+                //Make sure this shortUrl never exists in the database
                 ShortUrl = "ZZzz1234",
                 NewUrl = "https://youtube.com"
             });
@@ -145,12 +146,30 @@ namespace UrlShortener.Testing.Integration.UrlIntegrationTests
         }
 
 
-        private async Task<HttpClient> LoginUsingTestAccount(HttpClient client)
+        [Fact]
+        public async Task EditUrl_WhenNotOwner_ReturnsNotFound()
+        {
+            HttpClient client = factory.CreateClient();
+
+            //Login with account B and try to edit an Url from account A
+            await LoginUsingTestAccount(client, "Testing2", "Test123!");
+
+            HttpResponseMessage response = await client.PutAsJsonAsync("/api/url/EditShortUrl", new
+            {
+                ShortUrl = "ZZzz1234",
+                NewUrl = "https://youtube.com"
+            });
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+
+        private async Task<HttpClient> LoginUsingTestAccount(HttpClient client, string username, string password)
         {
             HttpResponseMessage response = await client.PostAsJsonAsync("/api/auth/login", new
             {
-                Username = "Testing",
-                Password = "Test123!"
+                Username = username,
+                Password = password
             });
 
             LoginResponse loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>() ?? throw new InvalidOperationException("LoginResponse was empty.");
