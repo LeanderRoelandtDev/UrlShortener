@@ -1,0 +1,27 @@
+﻿@inject Handlers.ApiHandler ApiHandler
+
+@page "/Auth/SignIn"
+
+<h3>SignIn</h3>
+
+
+<Button Variant="Variant.Filled"
+        Color="Color.Primary"
+        FullWidth="true"
+        @onclick="Submit">
+    Sign In
+</Button>
+
+
+@code {
+    private async Task Submit()
+    {
+        var request = new
+        {
+            Username = "Leander",
+            Password = "Test123!"
+        };
+
+        var result = await ApiHandler.Send<object>(HttpMethod.Post, "Auth/Login", request);
+    }
+}

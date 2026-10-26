@@ -8,9 +8,9 @@ if (builder.Environment.IsEnvironment("Testing"))
     builder.InstallTestingSetup();
 }
 
-builder.Services.AddControllers();
 
-builder.InstallSwagger()
+builder.InstallRestApi()
+       .InstallSwagger()
        .InstallProjectDependencies()
        .InstallAuth();
 
@@ -30,6 +30,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("UrlShortenerCorsPolicy");
 
 app.UseHttpsRedirection();
 
