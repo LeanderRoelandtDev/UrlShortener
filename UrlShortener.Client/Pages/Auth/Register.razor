@@ -1,0 +1,96 @@
+﻿@using System.ComponentModel.DataAnnotations
+
+@inject Handlers.ApiHandler ApiHandler
+@inject NavigationManager Nav
+
+@page "/Auth/register"
+
+@layout AuthLayout
+
+
+<PageTitle>Create account</PageTitle>
+
+<h1>Create your account</h1>
+<p class="auth-sub">Start shortening links in under a minute.</p>
+
+<EditForm Model="model" OnValidSubmit="Submit" class="auth-form">
+    <DataAnnotationsValidator />
+
+    @if (!string.IsNullOrEmpty(error))
+    {
+        <div class="auth-alert" role="alert">@error</div>
+    }
+
+    <div class="field">
+        <label for="name">Name</label>
+        <InputText id="name" @bind-Value="model.Name" autocomplete="name" placeholder="Your name" />
+        <ValidationMessage For="() => model.Name" />
+    </div>
+
+    <div class="field">
+        <label for="email">Email</label>
+        <InputText id="email" type="email" @bind-Value="model.Email" autocomplete="email" placeholder="you@example.com" />
+        <ValidationMessage For="() => model.Email" />
+    </div>
+
+    <div class="field">
+        <label for="password">Password</label>
+        <InputText id="password" type="password" @bind-Value="model.Password" autocomplete="new-password" placeholder="At least 8 characters" />
+        <ValidationMessage For="() => model.Password" />
+    </div>
+
+    <div class="field">
+        <label for="confirm">Confirm password</label>
+        <InputText id="confirm" type="password" @bind-Value="model.ConfirmPassword" autocomplete="new-password" placeholder="Repeat your password" />
+        <ValidationMessage For="() => model.ConfirmPassword" />
+    </div>
+
+    <button type="submit" class="btn-primary" disabled="@busy">
+        @(busy ? "Creating account…" : "Create account")
+    </button>
+</EditForm>
+
+<p class="auth-switch">Already have an account? <a href="auth/login">Sign in</a></p>
+
+@code {
+    private RegisterModel model = new();
+    private bool busy;
+    private string? error;
+
+    private async Task Submit()
+    {
+        busy = true;
+        error = null;
+
+        var result = await ApiHandler.Send(HttpMethod.Post, "Auth/Register", new { model.Name, model.Email, model.Password });
+
+        busy = false;
+
+        if (result.Success)
+        {
+            Nav.NavigateTo("/login");
+        }
+        else
+        {
+            error = result.Error;
+        }
+    }
+
+    public class RegisterModel
+    {
+        [Required(ErrorMessage = "Enter your name.")]
+        public string Name { get; set; } = "";
+
+        [Required(ErrorMessage = "Enter your email.")]
+        [EmailAddress(ErrorMessage = "Enter a valid email address.")]
+        public string Email { get; set; } = "";
+
+        [Required(ErrorMessage = "Choose a password.")]
+        [MinLength(8, ErrorMessage = "Use at least 8 characters.")]
+        public string Password { get; set; } = "";
+
+        [Required(ErrorMessage = "Repeat your password.")]
+        [Compare(nameof(Password), ErrorMessage = "Passwords don't match.")]
+        public string ConfirmPassword { get; set; } = "";
+    }
+}

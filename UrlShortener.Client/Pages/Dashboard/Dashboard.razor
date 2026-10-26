@@ -1,0 +1,229 @@
+﻿@page "/"
+@page "/dashboard"
+
+@layout DashboardLayout
+
+@using UrlShortener.Client.Handlers
+
+@inject ApiHandler ApiHandler
+@inject NavigationManager Nav
+@inject IJSRuntime JS
+
+<PageTitle>Your links</PageTitle>
+
+<h1>Your links</h1>
+<p class="dash-sub">Paste a long URL to create a short link.</p>
+
+<div class="dash-add">
+    <input class="dash-input" placeholder="https://example.com/a-very-long-link"
+           @bind="newUrl" @bind:event="oninput" @onkeydown="OnAddKey" />
+    <button class="btn-primary" @onclick="Add" disabled="@adding">
+        @(adding ? "Creating…" : "Create link")
+    </button>
+</div>
+
+
+@if (!string.IsNullOrEmpty(error))
+{
+    <div class="auth-alert" role="alert">@error</div>
+}
+
+@if (loading)
+{
+    <p class="dash-empty">Loading your links…</p>
+}
+else if (items.Count == 0)
+{
+    <p class="dash-empty">No links yet. Paste a URL above to create your first one.</p>
+}
+else
+{
+    <div class="dash-table-wrap">
+        <table class="dash-table">
+            <thead>
+                <tr>
+                    <th>Short link</th>
+                    <th>Original URL</th>
+                    <th class="num">Clicks</th>
+                    <th>Created</th>
+                    <th>Updated</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in items)
+                {
+                    <tr @key="item.Id">
+                        <td class="short">
+                            <a href="@FullShort(item)" target="_blank" rel="noopener">@ShortLabel(item)</a>
+                            <button class="btn-link" @onclick="() => Copy(item)">
+                                @(copiedId == item.Id ? "Copied" : "Copy")
+                            </button>
+                        </td>
+                        <td class="orig">
+                            @if (editingId == item.Id)
+                            {
+                                <input class="dash-input" @bind="editUrl" @bind:event="oninput" />
+                            }
+                            else
+                            {
+                                <span title="@item.OriginalUrl">@item.OriginalUrl</span>
+                            }
+                        </td>
+                        <td class="num">@item.ClickCount</td>
+                        <td>@item.CreatedAt.ToLocalTime().ToString("MMM d, yyyy")</td>
+                        <td>@(item.UpdatedAt is null ? "—" : item.UpdatedAt.Value.ToLocalTime().ToString("MMM d, yyyy"))</td>
+                        <td class="actions">
+                            @if (editingId == item.Id)
+                            {
+                                <button class="btn-link" @onclick="() => SaveEdit(item)">Save</button>
+                                <button class="btn-link muted" @onclick="CancelEdit">Cancel</button>
+                            }
+                            else if (confirmDeleteId == item.Id)
+                            {
+                                <button class="btn-link danger" @onclick="() => Delete(item)">Yes, delete</button>
+                                <button class="btn-link muted" @onclick="() => confirmDeleteId = null">No</button>
+                            }
+                            else
+                            {
+                                <button class="btn-link" @onclick="() => StartEdit(item)">Edit</button>
+                                <button class="btn-link danger" @onclick="() => confirmDeleteId = item.Id">Delete</button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private List<UrlItem> items = new();
+    private bool loading = true;
+    private bool adding;
+    private string? error;
+
+    private string newUrl = "";
+    private int? editingId;
+    private string editUrl = "";
+    private int? confirmDeleteId;
+    private int? copiedId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await ApiHandler.Send<List<UrlItem>>(HttpMethod.Get, "Url");
+        loading = false;
+
+        if (result.Success)
+            items = result.Data ?? new();
+        else
+            error = result.Error;
+    }
+
+
+    private async Task OnAddKey(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter") await Add();
+    }
+
+
+    private async Task Add()
+    {
+        error = null;
+
+        if (!IsValidUrl(newUrl))
+        {
+            error = "Enter a full URL starting with http:// or https://";
+            return;
+        }
+
+        adding = true;
+        var result = await ApiHandler.Send<UrlItem>(HttpMethod.Post, "Url", new { OriginalUrl = newUrl.Trim() });
+        adding = false;
+
+        if (result.Success && result.Data is not null)
+        {
+            items.Insert(0, result.Data);
+            newUrl = "";
+        }
+        else
+        {
+            error = result.Error;
+        }
+    }
+
+
+    private void StartEdit(UrlItem item)
+    {
+        error = null;
+        confirmDeleteId = null;
+        editingId = item.Id;
+        editUrl = item.OriginalUrl;
+    }
+
+    private void CancelEdit() => editingId = null;
+
+
+    private async Task SaveEdit(UrlItem item)
+    {
+        error = null;
+
+        if (!IsValidUrl(editUrl))
+        {
+            error = "Enter a full URL starting with http:// or https://";
+            return;
+        }
+
+        var result = await ApiHandler.Send<UrlItem>(HttpMethod.Put, $"Url/{item.Id}", new { OriginalUrl = editUrl.Trim() });
+
+        if (result.Success && result.Data is not null)
+        {
+            items[items.IndexOf(item)] = result.Data;
+            editingId = null;
+        }
+        else
+        {
+            error = result.Error;
+        }
+    }
+
+
+    private async Task Delete(UrlItem item)
+    {
+        error = null;
+        var result = await ApiHandler.Send(HttpMethod.Delete, $"Url/{item.Id}");
+
+        if (result.Success)
+            items.Remove(item);
+        else
+            error = result.Error;
+
+        confirmDeleteId = null;
+    }
+
+
+    private string FullShort(UrlItem item) => $"{Nav.BaseUri}{item.ShortUrl}";
+
+    private string ShortLabel(UrlItem item) => FullShort(item).Replace("https://", "").Replace("http://", "").TrimEnd('/');
+
+    private async Task Copy(UrlItem item)
+    {
+        await JS.InvokeVoidAsync("navigator.clipboard.writeText", FullShort(item));
+        copiedId = item.Id;
+        StateHasChanged();
+        await Task.Delay(1500);
+        copiedId = null;
+    }
+
+    private static bool IsValidUrl(string value) => Uri.TryCreate(value?.Trim(), UriKind.Absolute, out var uri) && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
+
+    public class UrlItem
+    {
+        public int Id { get; set; }
+        public string ShortUrl { get; set; } = "";
+        public string OriginalUrl { get; set; } = "";
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+        public int ClickCount { get; set; }
+    }
+}

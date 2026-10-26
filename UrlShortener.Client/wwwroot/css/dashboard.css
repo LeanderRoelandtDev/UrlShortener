@@ -1,0 +1,202 @@
+﻿/* Uses the color variables and font from auth.css, so load auth.css too. */
+
+.dash-shell {
+    min-height: 100vh;
+    font-family: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+}
+
+.dash-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    background: var(--ink);
+}
+
+.dash-logo {
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #fff;
+    text-decoration: none;
+}
+
+.btn-ghost {
+    padding: 0.5rem 0.9rem;
+    font: inherit;
+    font-weight: 600;
+    color: #fff;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+    .btn-ghost:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+.dash-main {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
+}
+
+    .dash-main h1 {
+        margin: 0 0 0.35rem;
+        font-size: 1.75rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+    }
+
+.dash-sub {
+    margin: 0;
+    color: var(--ink-soft);
+}
+
+/* ---------- Add form ---------- */
+.dash-add {
+    display: flex;
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+}
+
+    .dash-add .btn-primary {
+        margin-top: 0;
+        white-space: nowrap;
+    }
+
+.dash-input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.7rem 0.9rem;
+    font: inherit;
+    color: var(--ink);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+}
+
+    .dash-input:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(47, 91, 255, 0.2);
+    }
+
+.dash-main .auth-alert {
+    margin-bottom: 1rem;
+}
+
+.dash-empty {
+    padding: 2.5rem 1rem;
+    text-align: center;
+    color: var(--ink-soft);
+    background: var(--card);
+    border: 1px dashed var(--line);
+    border-radius: 12px;
+}
+
+/* ---------- Table ---------- */
+.dash-table-wrap {
+    overflow-x: auto;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+}
+
+.dash-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+}
+
+    .dash-table th {
+        padding: 0.8rem 1rem;
+        text-align: left;
+        font-weight: 600;
+        color: var(--ink-soft);
+        background: #fafbfd;
+        border-bottom: 1px solid var(--line);
+        white-space: nowrap;
+    }
+
+    .dash-table td {
+        padding: 0.8rem 1rem;
+        border-bottom: 1px solid #eef0f5;
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    .dash-table tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .dash-table .num {
+        text-align: right;
+    }
+
+    .dash-table .short a {
+        margin-right: 0.5rem;
+        font-weight: 700;
+        color: var(--accent);
+        text-decoration: none;
+    }
+
+        .dash-table .short a:hover {
+            text-decoration: underline;
+        }
+
+    .dash-table .orig {
+        width: 100%;
+        max-width: 0;
+    }
+
+        .dash-table .orig span {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--ink-soft);
+        }
+
+    .dash-table .actions {
+        text-align: right;
+    }
+
+.btn-link {
+    padding: 0.2rem 0.4rem;
+    font: inherit;
+    font-weight: 600;
+    color: var(--accent);
+    background: none;
+    border: 0;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+    .btn-link:hover {
+        background: #eef2ff;
+    }
+
+    .btn-link.danger {
+        color: var(--danger);
+    }
+
+        .btn-link.danger:hover {
+            background: var(--danger-bg);
+        }
+
+    .btn-link.muted {
+        color: var(--ink-soft);
+    }
+
+@media (max-width: 640px) {
+    .dash-top {
+        padding: 0.9rem 1.25rem;
+    }
+
+    .dash-add {
+        flex-direction: column;
+    }
+}

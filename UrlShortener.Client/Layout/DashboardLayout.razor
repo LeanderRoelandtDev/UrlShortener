@@ -1,0 +1,20 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager Nav
+
+<div class="dash-shell">
+    <header class="dash-top">
+        <a class="dash-logo" href="/dashboard">shrtn</a>
+        <button class="btn-ghost" @onclick="SignOut">Sign out</button>
+    </header>
+
+    <main class="dash-main">
+        @Body
+    </main>
+</div>
+
+@code {
+    private void SignOut()
+    {
+        Nav.NavigateTo("/login");
+    }
+}
