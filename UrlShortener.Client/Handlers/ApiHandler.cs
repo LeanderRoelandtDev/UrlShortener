@@ -7,19 +7,24 @@ namespace UrlShortener.Client.Handlers
     {
         private const string BaseUrl = "/api/";
 
-        public async Task<LoginResponse?> Send<T>(HttpMethod method, string path, object? request = null)
+        public async Task<T?> Send<T>(HttpMethod method, string path, object? request = null) where T : new()
         {
             HttpClient httpClient = httpClientFactory.CreateClient("UrlShortenerApi");
 
-            var response = await httpClient.PostAsJsonAsync(BaseUrl + path, request);
+            HttpRequestMessage message = new HttpRequestMessage(method, BaseUrl + path);
 
-            Console.WriteLine(BaseUrl + path);
+            if (request is not null)
+            {
+                message.Content = JsonContent.Create(request);
+            }
+
+            HttpResponseMessage response = await httpClient.SendAsync(message);
 
             response.EnsureSuccessStatusCode();
 
-            var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+            T? result = await response.Content.ReadFromJsonAsync<T>();
 
-            return result;
+            return result ?? new T();
         }
     }
 }
