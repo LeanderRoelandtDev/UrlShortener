@@ -24,7 +24,21 @@ namespace UrlShortener.Api.Controllers
         {
             LoginResponse result = await authService.Login(request);
 
-            return Ok(result);
+            CreateCookie(result.JwtToken);
+
+            return Ok();
+        }
+
+        private void CreateCookie(string jwt)
+        {
+            Response.Cookies.Append("jwt", jwt, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Lax,
+                Expires = DateTimeOffset.UtcNow.AddMinutes(30),
+                Path = "/"
+            });
         }
     }
 }
