@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using UrlShortener.Core.Interfaces.Repositories;
 using UrlShortener.Infrastructure.Context;
-using UrlShortener.Infrastructure.DomainModels;
+using UrlEntity = UrlShortener.Infrastructure.DomainModels.UrlEntity;
+
 
 namespace UrlShortener.Infrastructure.Repositories
 {
@@ -12,6 +13,22 @@ namespace UrlShortener.Infrastructure.Repositories
             UrlEntity urlEntity = await db.UrlEntities.FirstOrDefaultAsync(url => url.ShortUrl == shortUrl);
 
             return urlEntity?.OriginalUrl;
+        }
+
+        public async Task<List<Models.UrlEntity>> GetAll(Guid userId)
+        {
+            return await db.UrlEntities.AsNoTracking()
+                .Where(url => url.ApplicationUserId == userId)
+                .Select(url => new Models.UrlEntity
+                {
+                    Id = url.Id,
+                    ShortUrl = url.ShortUrl,
+                    OriginalUrl = url.OriginalUrl,
+                    CreatedAt = url.CreatedAt,
+                    UpdatedAt = url.UpdatedAt,
+                    ClickCount = url.ClickCount,
+                    UserId = url.ApplicationUserId
+                }).ToListAsync();
         }
 
         public async Task<bool> IsDuplicate(string code)

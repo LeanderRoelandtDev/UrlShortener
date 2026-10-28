@@ -5,6 +5,7 @@ using System.Security.Claims;
 using UrlShortener.Core.Exceptions;
 using UrlShortener.Core.Interfaces.Services;
 using UrlShortener.Dtos.Url.Request;
+using UrlShortener.Dtos.Url.Response;
 
 namespace UrlShortener.Api.Controllers
 {
@@ -18,6 +19,15 @@ namespace UrlShortener.Api.Controllers
             string originalUrl = await urlService.GetOriginalUrl(request.ShortUrl);
 
             return Ok(originalUrl);
+        }
+
+        [Authorize]
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAll()
+        {
+            List<UrlResponse> urlEntities = await urlService.GetAll(GetUserId());
+
+            return Ok(urlEntities);
         }
 
 

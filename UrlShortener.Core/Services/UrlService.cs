@@ -1,10 +1,12 @@
 ﻿
 using System.CodeDom.Compiler;
+using System.Reflection;
 using System.Xml;
 using UrlShortener.Core.Exceptions;
 using UrlShortener.Core.Interfaces.Repositories;
 using UrlShortener.Core.Interfaces.Services;
 using UrlShortener.Dtos.Url.Request;
+using UrlShortener.Dtos.Url.Response;
 using UrlShortener.Models;
 
 namespace UrlShortener.Core.Services
@@ -21,6 +23,26 @@ namespace UrlShortener.Core.Services
             }
 
             return originalUrl;
+        }
+
+        public async Task<List<UrlResponse>> GetAll(Guid userId)
+        {
+            List<UrlEntity> urlEntities = await urlRepository.GetAll(userId);
+
+            if (urlEntities == null)
+            {
+                throw ErrorException.NotFound("Something went wrong trying to get the short url.");
+            }
+
+            return urlEntities.Select(m => new UrlResponse
+            {
+                Id = m.Id,
+                ShortUrl = m.ShortUrl,
+                OriginalUrl = m.OriginalUrl,
+                CreatedAt = m.CreatedAt,
+                UpdatedAt = m.UpdatedAt,
+                ClickCount = m.ClickCount
+            }).ToList();
         }
 
 

@@ -104,14 +104,14 @@ else
     private string? error;
 
     private string newUrl = "";
-    private int? editingId;
+    private Guid? editingId;
     private string editUrl = "";
-    private int? confirmDeleteId;
-    private int? copiedId;
+    private Guid? confirmDeleteId;
+    private Guid? copiedId;
 
     protected override async Task OnInitializedAsync()
     {
-        var result = await ApiHandler.Send<List<UrlItem>>(HttpMethod.Get, "Url");
+        var result = await ApiHandler.Send<List<UrlItem>>(HttpMethod.Get, "Url/GetAll");
         loading = false;
 
         if (result.Success)
@@ -138,7 +138,9 @@ else
         }
 
         adding = true;
-        var result = await ApiHandler.Send<UrlItem>(HttpMethod.Post, "Url", new { OriginalUrl = newUrl.Trim() });
+
+        var result = await ApiHandler.Send<UrlItem>(HttpMethod.Post, "Url/CreateShortUrl", new { Url = newUrl.Trim() });
+
         adding = false;
 
         if (result.Success && result.Data is not null)
@@ -219,7 +221,7 @@ else
 
     public class UrlItem
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string ShortUrl { get; set; } = "";
         public string OriginalUrl { get; set; } = "";
         public DateTime CreatedAt { get; set; }
