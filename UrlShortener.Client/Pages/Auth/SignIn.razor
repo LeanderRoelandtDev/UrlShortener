@@ -1,5 +1,4 @@
 ﻿@using System.ComponentModel.DataAnnotations
-@using UrlShortener.Dtos.Auth.Response
 
 @inject Handlers.ApiHandler ApiHandler
 @inject NavigationManager Nav
@@ -23,9 +22,9 @@
     }
 
     <div class="field">
-        <label for="email">Email</label>
-        <InputText id="email" type="email" @bind-Value="model.Email" autocomplete="email" placeholder="you@example.com" />
-        <ValidationMessage For="() => model.Email" />
+        <label for="username">Username</label>
+        <InputText id="username" type="text" @bind-Value="model.Username" autocomplete="username" placeholder="Username" />
+        <ValidationMessage For="() => model.Username" />
     </div>
 
     <div class="field">
@@ -56,26 +55,24 @@
         busy = true;
         error = null;
 
-        var result = await ApiHandler.Send<LoginResponse>(HttpMethod.Post, "Auth/Login", new { model.Email, model.Password });
+        var result = await ApiHandler.Send(HttpMethod.Post, "Auth/Login", new { model.Username, model.Password });
 
         busy = false;
 
-        if (result.Success && !string.IsNullOrEmpty(result.Data?.JwtToken))
+        if (result.Success)
         {
-            //await JS.InvokeVoidAsync("localStorage.setItem", "token", result.Data.JwtToken);
             Nav.NavigateTo("/dashboard");
         }
         else
         {
-            error = result.Error ?? "Email or password is incorrect.";
+            error = result.Error ?? "Invalid login credentials";
         }
     }
 
     public class LoginModel
     {
-        [Required(ErrorMessage = "Enter your email.")]
-        [EmailAddress(ErrorMessage = "Enter a valid email address.")]
-        public string Email { get; set; } = "";
+        [Required(ErrorMessage = "Enter your username.")]
+        public string Username { get; set; } = "";
 
         [Required(ErrorMessage = "Enter your password.")]
         public string Password { get; set; } = "";
