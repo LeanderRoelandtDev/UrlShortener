@@ -13,7 +13,8 @@
                     {
                         policy.WithOrigins("https://localhost:7124")
                               .AllowAnyHeader()
-                              .AllowAnyMethod();
+                              .AllowAnyMethod()
+                              .AllowCredentials();
                     });
             });
 

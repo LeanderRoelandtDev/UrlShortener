@@ -1,5 +1,7 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
+using Microsoft.AspNetCore.Components.WebAssembly.Http;
+
 
 namespace UrlShortener.Client.Handlers
 {
@@ -14,7 +16,10 @@ namespace UrlShortener.Client.Handlers
             try
             {
                 HttpClient httpClient = httpClientFactory.CreateClient("UrlShortenerApi");
+
                 HttpRequestMessage message = new(method, BaseUrl + path);
+                message.SetBrowserRequestCredentials(BrowserRequestCredentials.Include);
+
 
                 if (request is not null)
                 {
