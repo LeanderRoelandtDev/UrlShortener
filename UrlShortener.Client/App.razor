@@ -1,6 +1,27 @@
-﻿<Router AppAssembly="@typeof(App).Assembly" NotFoundPage="typeof(Pages.NotFound)">
+﻿@using Microsoft.AspNetCore.Components.Authorization
+<Router AppAssembly="@typeof(App).Assembly" NotFoundPage="typeof(Pages.NotFound)">
     <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(DashboardLayout)"/>
+        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(DashboardLayout)">
+            <NotAuthorized>
+                @{
+                    RedirectToSignIn();
+                }
+            </NotAuthorized>
+            <Authorizing>
+                <p>Validating Credentials...</p>
+            </Authorizing>
+        </AuthorizeRouteView>
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
     </Found>
 </Router>
+
+@inject NavigationManager Nav
+
+@code {
+    protected void RedirectToSignIn()
+    {
+        string   returnUrl = Uri.EscapeDataString(Nav.ToBaseRelativePath(Nav.Uri));
+
+        Nav.NavigateTo($"auth/SignIn?returnUrl={returnUrl}", replace: true);
+    }
+}

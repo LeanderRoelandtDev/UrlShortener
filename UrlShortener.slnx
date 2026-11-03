@@ -1,9 +1,21 @@
 <Solution>
-  <Project Path="UrlShortener.Api/UrlShortener.Api.csproj" />
-  <Project Path="UrlShortener.Client/UrlShortener.Client.csproj" Id="cf9b80b8-365c-4668-bda9-855820e4ae95" />
-  <Project Path="UrlShortener.Core/UrlShortener.Core.csproj" />
-  <Project Path="UrlShortener.Dtos/UrlShortener.Dtos.csproj" Id="1b514b2d-366c-405c-90d6-8189a58f7020" />
-  <Project Path="UrlShortener.Infrastructure/UrlShortener.Infrastructure.csproj" Id="3ac98b4d-334c-46af-aa84-1df893eef304" />
-  <Project Path="UrlShortener.Models/UrlShortener.Models.csproj" />
-  <Project Path="UrlShortener.Testing/UrlShortener.Testing.csproj" Id="948b611e-b97f-45e8-90a4-7baafa687ab0" />
+  <Folder Name="/Api/">
+    <Project Path="UrlShortener.Api/UrlShortener.Api.csproj" />
+  </Folder>
+  <Folder Name="/Client/">
+    <Project Path="UrlShortener.Client/UrlShortener.Client.csproj" Id="cf9b80b8-365c-4668-bda9-855820e4ae95" />
+  </Folder>
+  <Folder Name="/Core/">
+    <Project Path="UrlShortener.Core/UrlShortener.Core.csproj" />
+  </Folder>
+  <Folder Name="/Db/">
+    <Project Path="UrlShortener.Infrastructure/UrlShortener.Infrastructure.csproj" Id="3ac98b4d-334c-46af-aa84-1df893eef304" />
+  </Folder>
+  <Folder Name="/Models/">
+    <Project Path="UrlShortener.Dtos/UrlShortener.Dtos.csproj" Id="1b514b2d-366c-405c-90d6-8189a58f7020" />
+    <Project Path="UrlShortener.Models/UrlShortener.Models.csproj" />
+  </Folder>
+  <Folder Name="/Testing/">
+    <Project Path="UrlShortener.Testing/UrlShortener.Testing.csproj" Id="948b611e-b97f-45e8-90a4-7baafa687ab0" />
+  </Folder>
 </Solution>
