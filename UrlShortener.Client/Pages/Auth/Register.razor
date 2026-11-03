@@ -1,9 +1,11 @@
 ﻿@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Authorization
 
 @inject Handlers.ApiHandler ApiHandler
 @inject NavigationManager Nav
 
 @page "/Auth/register"
+@attribute [AllowAnonymous]
 
 @layout AuthLayout
 

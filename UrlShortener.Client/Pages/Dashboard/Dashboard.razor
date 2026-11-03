@@ -1,8 +1,10 @@
 ﻿@page "/"
 @page "/dashboard"
+@attribute [Authorize]
 
 @layout DashboardLayout
 
+@using Microsoft.AspNetCore.Authorization
 @using UrlShortener.Client.Handlers
 
 @inject ApiHandler ApiHandler
