@@ -4,13 +4,21 @@ using static System.Net.WebRequestMethods;
 
 namespace UrlShortener.Client.Handlers
 {
-    public class ApiAuthStateHandler(ApiHandler apiHandler) : AuthenticationStateProvider
+    public class ApiAuthStateHandler : AuthenticationStateProvider
     {
+        private readonly ApiHandler ApiHandler;
+
+        public ApiAuthStateHandler(ApiHandler apiHandler)
+        {
+            ApiHandler = apiHandler;
+            ApiHandler.Unauthorized += () => _ = NotifyAuthChanged();
+        }
+
         private static readonly AuthenticationState Anonymous = new(new ClaimsPrincipal(new ClaimsIdentity()));
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            var result = await apiHandler.Send<List<ClaimDto>>(HttpMethod.Get, "auth/me");
+            var result = await ApiHandler.Send<List<ClaimDto>>(HttpMethod.Get, "auth/me");
 
 
             if (!result.Success || result.Data is null || result.Data.Count == 0)
@@ -22,7 +30,14 @@ namespace UrlShortener.Client.Handlers
         }
 
 
-        public void NotifyAuthChanged() => NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+        public async Task NotifyAuthChanged()
+        {
+            var task = GetAuthenticationStateAsync();
+
+            NotifyAuthenticationStateChanged(task);
+
+            await task;
+        }
     }
 }
 

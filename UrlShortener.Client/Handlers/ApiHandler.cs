@@ -1,6 +1,7 @@
-﻿using System.Net.Http.Json;
+﻿using Microsoft.AspNetCore.Components.WebAssembly.Http;
+using System.Net;
+using System.Net.Http.Json;
 using System.Text.Json;
-using Microsoft.AspNetCore.Components.WebAssembly.Http;
 
 
 namespace UrlShortener.Client.Handlers
@@ -10,6 +11,9 @@ namespace UrlShortener.Client.Handlers
         private const string BaseUrl = "/api/";
         private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
         private record ProblemResponse(string? Detail);
+
+        public event Action? Unauthorized;
+
 
         public async Task<ApiResult<T>> Send<T>(HttpMethod method, string path, object? request = null) where T : new()
         {
@@ -27,6 +31,13 @@ namespace UrlShortener.Client.Handlers
                 }
 
                 HttpResponseMessage response = await httpClient.SendAsync(message);
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized && !path.StartsWith("auth/"))
+                {
+                    Unauthorized?.Invoke();
+                    return new(default, "Session expired.");
+                }
+
                 string body = await response.Content.ReadAsStringAsync();
 
                 if (!response.IsSuccessStatusCode)
