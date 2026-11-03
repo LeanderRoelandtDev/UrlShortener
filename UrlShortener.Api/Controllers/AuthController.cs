@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using UrlShortener.Core.Interfaces.Services;
@@ -27,6 +28,15 @@ namespace UrlShortener.Api.Controllers
             CreateCookie(result.JwtToken);
 
             return Ok();
+        }
+
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<IActionResult> GetUserClaims()
+        {
+            var claims = User.Claims.Select(c => new UserClaimsResponse { Type = c.Type, Value = c.Value });
+
+            return Ok(claims);
         }
 
         private void CreateCookie(string jwt)
