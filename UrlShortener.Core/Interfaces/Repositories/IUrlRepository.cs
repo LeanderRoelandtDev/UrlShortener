@@ -11,7 +11,7 @@ namespace UrlShortener.Core.Interfaces.Repositories
         Task<string> GetOriginalUrl(string shortUrl);
         Task<List<UrlEntity>> GetAll(Guid userId);
         Task<bool> IsDuplicate(string shortUrl);
-        Task<string> Create(string url, string shortUrl, Guid userId);
+        Task<UrlEntity> Create(string url, string shortUrl, Guid userId);
         Task<UrlEntity?> GetByShortUrl(string shortUrl, Guid userId);
         Task Update(UrlEntity urlEntity);
         Task Delete(UrlEntity urlEntity);

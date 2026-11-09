@@ -46,7 +46,7 @@ namespace UrlShortener.Core.Services
         }
 
 
-        public async Task<string> Create(CreateShortUrlRequest request, Guid userId)
+        public async Task<UrlResponse> Create(CreateShortUrlRequest request, Guid userId)
         {
             string generatedShortUrl = GenerateRandomCode();
 
@@ -60,7 +60,17 @@ namespace UrlShortener.Core.Services
                 }
             }
 
-            return await urlRepository.Create(request.Url, generatedShortUrl, userId);
+            UrlEntity created = await urlRepository.Create(request.Url, generatedShortUrl, userId);
+
+            return new UrlResponse
+            {
+                Id = created.Id,
+                ShortUrl = created.ShortUrl,
+                OriginalUrl = created.OriginalUrl,
+                CreatedAt = created.CreatedAt,
+                UpdatedAt = created.UpdatedAt,
+                ClickCount = created.ClickCount
+            };
         }
 
 

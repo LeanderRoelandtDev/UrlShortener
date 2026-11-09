@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using UrlShortener.Core.Exceptions;
 using UrlShortener.Core.Interfaces.Repositories;
 using UrlShortener.Infrastructure.Context;
 using UrlEntity = UrlShortener.Infrastructure.DomainModels.UrlEntity;
@@ -36,7 +37,7 @@ namespace UrlShortener.Infrastructure.Repositories
             return await db.UrlEntities.AnyAsync(url => url.ShortUrl == code);
         }
 
-        public async Task<string> Create(string url, string shortUrl, Guid userId)
+        public async Task<Models.UrlEntity> Create(string url, string shortUrl, Guid userId)
         {
             UrlEntity newUrl = new UrlEntity
             {
@@ -47,15 +48,26 @@ namespace UrlShortener.Infrastructure.Repositories
                 ApplicationUserId = userId
             };
 
-            await db.UrlEntities.AddAsync(newUrl);
-            int updatedRows = await db.SaveChangesAsync();
-            if (updatedRows > 0)
+            try
             {
-                return newUrl.ShortUrl;
+                await db.UrlEntities.AddAsync(newUrl);
+                await db.SaveChangesAsync();
 
+                return new Models.UrlEntity
+                {
+                    Id = newUrl.Id,
+                    ShortUrl = newUrl.ShortUrl,
+                    OriginalUrl = newUrl.OriginalUrl,
+                    CreatedAt = newUrl.CreatedAt,
+                    UpdatedAt = newUrl.UpdatedAt,
+                    ClickCount = newUrl.ClickCount,
+                    UserId = newUrl.ApplicationUserId
+                };
             }
-
-            throw new Exception("Something went wrong creating a UrlEntity");
+            catch (DbUpdateException)
+            {
+                throw ErrorException.AlreadyExists("Unable to create a unique short url");
+            }
         }
 
 

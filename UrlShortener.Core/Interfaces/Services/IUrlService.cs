@@ -12,7 +12,7 @@ namespace UrlShortener.Core.Interfaces.Services
     {
         Task<string> GetOriginalUrl(string shortUrl);
         Task<List<UrlResponse>> GetAll(Guid userId);
-        Task<string> Create(CreateShortUrlRequest request, Guid userId);
+        Task<UrlResponse> Create(CreateShortUrlRequest request, Guid userId);
         Task Edit(EditUrlEntityRequest request, Guid userId);
         Task Delete(string shortUrl, Guid userId);
     }

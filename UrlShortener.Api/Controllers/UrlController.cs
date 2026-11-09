@@ -35,9 +35,9 @@ namespace UrlShortener.Api.Controllers
         [HttpPost("CreateShortUrl")]
         public async Task<IActionResult> Create([FromBody] CreateShortUrlRequest request)
         {
-            string shortUrl = await urlService.Create(request, GetUserId());
+            UrlResponse newUrlEntity = await urlService.Create(request, GetUserId());
             
-            return Ok(shortUrl);
+            return Ok(newUrlEntity);
         }
 
 
