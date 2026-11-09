@@ -64,9 +64,6 @@
 
         busy = false;
 
-        Console.WriteLine(result);
-        Console.WriteLine(result.Data);
-
         if (result.Success)
         {
             await AuthState.NotifyAuthChanged();
