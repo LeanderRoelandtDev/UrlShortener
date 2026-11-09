@@ -39,14 +39,37 @@ namespace UrlShortener.Api.Controllers
             return Ok(claims);
         }
 
+        [Authorize]
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            DeleteCookie();
+            return Ok();
+        }
+
+
+        private const string CookieName = "jwt";
+
+
         private void CreateCookie(string jwt)
         {
-            Response.Cookies.Append("jwt", jwt, new CookieOptions
+            Response.Cookies.Append(CookieName, jwt, new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.Lax,
                 Expires = DateTimeOffset.UtcNow.AddMinutes(30),
+                Path = "/"
+            });
+        }
+
+        private void DeleteCookie()
+        {
+            Response.Cookies.Delete(CookieName, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Lax,
                 Path = "/"
             });
         }

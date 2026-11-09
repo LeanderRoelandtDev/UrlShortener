@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
-using static System.Net.WebRequestMethods;
 
 namespace UrlShortener.Client.Handlers
 {

@@ -1,9 +1,18 @@
-﻿@inherits LayoutComponentBase
+﻿@using UrlShortener.Client.Handlers
+@inherits LayoutComponentBase
+
 @inject NavigationManager Nav
+@inject ApiHandler ApiHandler
+@inject ApiAuthStateHandler AuthState
+
 
 <div class="dash-shell">
     <header class="dash-top">
         <a class="dash-logo" href="/dashboard">shrtn</a>
+        @if (error is not null)
+        {
+            <span class="dash-error">@error</span>
+        }
         <button class="btn-ghost" @onclick="SignOut">Sign out</button>
     </header>
 
@@ -13,8 +22,23 @@
 </div>
 
 @code {
-    private void SignOut()
+
+    private string? error;
+
+    private async Task SignOut()
     {
-        Nav.NavigateTo("/login");
+        error = null;
+
+        var result = await ApiHandler.Send(HttpMethod.Post, "auth/logout");
+
+        if (!result.Success)
+        {
+            error = "Couldn't sign out. Try again.";
+            return;
+        }
+
+        await AuthState.NotifyAuthChanged();
+
+        Nav.NavigateTo("/auth/signin");
     }
 }
