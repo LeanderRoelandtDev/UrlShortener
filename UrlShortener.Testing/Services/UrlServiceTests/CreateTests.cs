@@ -55,6 +55,9 @@ namespace UrlShortener.Testing.Services.UrlServiceTests
 
             //Check if the returning url matches what i expect
             Assert.NotNull(result);
+            Assert.Equal("https://google.com", result.OriginalUrl);
+            Assert.False(string.IsNullOrWhiteSpace(result.ShortUrl));
+            Assert.Equal(0, result.ClickCount);
         }
 
         [Fact]
