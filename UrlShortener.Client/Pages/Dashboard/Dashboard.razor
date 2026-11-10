@@ -205,7 +205,8 @@ else
     private async Task Delete(UrlItem item)
     {
         error = null;
-        var result = await ApiHandler.Send(HttpMethod.Delete, $"Url/{item.Id}");
+
+        var result = await ApiHandler.Send(HttpMethod.Delete, $"Url/{item.ShortUrl}");
 
         if (result.Success)
             items.Remove(item);
