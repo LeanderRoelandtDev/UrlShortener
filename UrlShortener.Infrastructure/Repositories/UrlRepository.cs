@@ -92,18 +92,33 @@ namespace UrlShortener.Infrastructure.Repositories
         }
 
 
-        public async Task Update(Models.UrlEntity urlEntity)
+        public async Task<Models.UrlEntity> Update(Models.UrlEntity urlEntity)
         {
             UrlEntity entity = await db.UrlEntities.FirstAsync(x => x.Id == urlEntity.Id);
 
             entity.OriginalUrl = urlEntity.OriginalUrl;
             entity.UpdatedAt = DateTime.UtcNow;
 
-            int updatedRows = await db.SaveChangesAsync();
 
-            if (updatedRows == 0)
+            try
             {
-                throw new Exception("Something went wrong updating a UrlEntity");
+                await db.SaveChangesAsync();
+
+                return new Models.UrlEntity
+                {
+                    Id = entity.Id,
+                    ShortUrl = entity.ShortUrl,
+                    OriginalUrl = entity.OriginalUrl,
+                    CreatedAt = entity.CreatedAt,
+                    UpdatedAt = entity.UpdatedAt,
+                    ClickCount = entity.ClickCount,
+                    UserId = entity.ApplicationUserId
+                };
+
+            }
+            catch (DbUpdateException)
+            {
+                throw ErrorException.AlreadyExists("Unable to update a unique short url");
             }
         }
 

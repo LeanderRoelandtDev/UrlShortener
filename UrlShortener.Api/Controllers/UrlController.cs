@@ -45,9 +45,9 @@ namespace UrlShortener.Api.Controllers
         [HttpPut("EditShortUrl")]
         public async Task<IActionResult> Edit([FromBody] EditUrlEntityRequest request)
         {
-            await urlService.Edit(request, GetUserId());
+            UrlResponse newUrlEntity = await urlService.Edit(request, GetUserId());
 
-            return NoContent();
+            return Ok(newUrlEntity);
         }
 
         [Authorize]

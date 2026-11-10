@@ -74,7 +74,7 @@ namespace UrlShortener.Core.Services
         }
 
 
-        public async Task Edit(EditUrlEntityRequest request, Guid userId)
+        public async Task<UrlResponse> Edit(EditUrlEntityRequest request, Guid userId)
         {
             UrlEntity? existingUrlEntity = await urlRepository.GetByShortUrl(request.ShortUrl, userId);
 
@@ -85,7 +85,17 @@ namespace UrlShortener.Core.Services
 
             existingUrlEntity.OriginalUrl = request.NewUrl;
 
-            await urlRepository.Update(existingUrlEntity);
+            UrlEntity updated = await urlRepository.Update(existingUrlEntity);
+
+            return new UrlResponse
+            {
+                Id = updated.Id,
+                ShortUrl = updated.ShortUrl,
+                OriginalUrl = updated.OriginalUrl,
+                CreatedAt = updated.CreatedAt,
+                UpdatedAt = updated.UpdatedAt,
+                ClickCount = updated.ClickCount
+            };
         }
 
 

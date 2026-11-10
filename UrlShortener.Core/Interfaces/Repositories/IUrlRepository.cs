@@ -13,7 +13,7 @@ namespace UrlShortener.Core.Interfaces.Repositories
         Task<bool> IsDuplicate(string shortUrl);
         Task<UrlEntity> Create(string url, string shortUrl, Guid userId);
         Task<UrlEntity?> GetByShortUrl(string shortUrl, Guid userId);
-        Task Update(UrlEntity urlEntity);
+        Task<UrlEntity> Update(UrlEntity urlEntity);
         Task Delete(UrlEntity urlEntity);
     }
 }

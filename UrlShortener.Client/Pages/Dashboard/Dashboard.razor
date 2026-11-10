@@ -4,6 +4,7 @@
 
 @layout DashboardLayout
 
+@using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Authorization
 @using UrlShortener.Client.Handlers
 
@@ -178,7 +179,16 @@ else
             return;
         }
 
-        var result = await ApiHandler.Send<UrlItem>(HttpMethod.Put, $"Url/{item.Id}", new { OriginalUrl = editUrl.Trim() });
+
+        EditUrlItemRequest updatedItem = new EditUrlItemRequest
+        {
+            ShortUrl = item.ShortUrl,
+            NewUrl = editUrl,
+            ClickCount = item.ClickCount
+        };
+
+
+        var result = await ApiHandler.Send<UrlItem>(HttpMethod.Put, $"Url/EditShortUrl", updatedItem);
 
         if (result.Success && result.Data is not null)
         {
@@ -221,6 +231,9 @@ else
 
     private static bool IsValidUrl(string value) => Uri.TryCreate(value?.Trim(), UriKind.Absolute, out var uri) && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
 
+
+
+
     public class UrlItem
     {
         public Guid Id { get; set; }
@@ -229,5 +242,17 @@ else
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public int ClickCount { get; set; }
+    }
+
+    public class EditUrlItemRequest
+    {
+        [Required]
+        [RegularExpression("^[A-Za-z0-9]{8}$")]
+        public string ShortUrl { get; set; } = "";
+
+        [Required]
+        [Url]
+        public string NewUrl { get; set; } = "";
+        public int ClickCount { get; set; } = 0;
     }
 }
