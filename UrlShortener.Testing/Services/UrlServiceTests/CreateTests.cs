@@ -8,8 +8,8 @@ using UrlShortener.Core.Interfaces.Repositories;
 using UrlShortener.Core.Interfaces.Services;
 using UrlShortener.Core.Services;
 using UrlShortener.Dtos.Url.Request;
+using UrlShortener.Dtos.Url.Response;
 using UrlShortener.Models;
-using static System.Net.WebRequestMethods;
 
 namespace UrlShortener.Testing.Services.UrlServiceTests
 {
@@ -28,7 +28,16 @@ namespace UrlShortener.Testing.Services.UrlServiceTests
                                    .ReturnsAsync(false);
 
             repository.Setup(x => x.Create("https://google.com", It.IsAny<string>(), userId))
-                      .ReturnsAsync((string url, string shortUrl, Guid userId) => shortUrl);
+                      .ReturnsAsync((string url, string shortUrl, Guid userId) => new UrlEntity
+                      {
+                          Id = Guid.NewGuid(),
+                          OriginalUrl = url,
+                          ShortUrl = shortUrl,
+                          UserId = userId,
+                          CreatedAt = DateTime.UtcNow,
+                          UpdatedAt = DateTime.UtcNow,
+                          ClickCount = 0
+                      });
 
 
             UrlService service = new UrlService(repository.Object);
@@ -41,7 +50,7 @@ namespace UrlShortener.Testing.Services.UrlServiceTests
 
 
             //Call the method inside the UrlService and store the return
-            string result = await service.Create(request, userId);
+             UrlResponse result = await service.Create(request, userId);
 
 
             //Check if the returning url matches what i expect
@@ -59,7 +68,16 @@ namespace UrlShortener.Testing.Services.UrlServiceTests
                                    .ReturnsAsync(false);
 
             repository.Setup(x => x.Create("https://google.com", It.IsAny<string>(), userId))
-                      .ReturnsAsync((string url, string shortUrl, Guid userId) => shortUrl);
+                      .ReturnsAsync((string url, string shortUrl, Guid userId) => new UrlEntity
+                      {
+                          Id = Guid.NewGuid(),
+                          OriginalUrl = url,
+                          ShortUrl = shortUrl,
+                          UserId = userId,
+                          CreatedAt = DateTime.UtcNow,
+                          UpdatedAt = DateTime.UtcNow,
+                          ClickCount = 0
+                      });
 
 
             UrlService service = new UrlService(repository.Object);
@@ -72,7 +90,7 @@ namespace UrlShortener.Testing.Services.UrlServiceTests
 
 
             //Call the method inside the UrlService and store the return
-            string result = await service.Create(request, userId);
+            UrlResponse result = await service.Create(request, userId);
 
             //Check if the returning url matches what i expect
             Assert.NotNull(result);
