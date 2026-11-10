@@ -39,9 +39,9 @@
     }
 
 .dash-main {
-    max-width: 1040px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 2rem 1.25rem 4rem;
+    padding: 2rem 1.5rem 4rem;
 }
 
     .dash-main h1 {
@@ -103,7 +103,8 @@
     overflow-x: auto;
     background: var(--card);
     border: 1px solid var(--line);
-    border-radius: 12px;
+    border-radius: 14px;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 4px 16px rgba(16, 24, 40, 0.04);
 }
 
 .dash-table {
@@ -113,9 +114,12 @@
 }
 
     .dash-table th {
-        padding: 0.8rem 1rem;
+        padding: 0.85rem 1rem;
         text-align: left;
-        font-weight: 600;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
         color: var(--ink-soft);
         background: #fafbfd;
         border-bottom: 1px solid var(--line);
@@ -123,72 +127,142 @@
     }
 
     .dash-table td {
-        padding: 0.8rem 1rem;
+        padding: 0.9rem 1rem;
         border-bottom: 1px solid #eef0f5;
         vertical-align: middle;
         white-space: nowrap;
     }
 
-    .dash-table tbody tr:last-child td {
-        border-bottom: 0;
+    .dash-table tbody tr {
+        transition: background 0.12s ease;
     }
+
+        .dash-table tbody tr:hover {
+            background: #f8f9fc;
+        }
+
+        .dash-table tbody tr:last-child td {
+            border-bottom: 0;
+        }
 
     .dash-table .num {
         text-align: right;
     }
 
-    .dash-table .short a {
-        margin-right: 0.5rem;
-        font-weight: 700;
-        color: var(--accent);
-        text-decoration: none;
-    }
-
-        .dash-table .short a:hover {
-            text-decoration: underline;
-        }
-
-    .dash-table .orig {
-        width: 100%;
-        max-width: 0;
-    }
-
-        .dash-table .orig span {
-            display: block;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            color: var(--ink-soft);
-        }
-
-    .dash-table .actions {
-        text-align: right;
-    }
-
-.btn-link {
-    padding: 0.2rem 0.4rem;
-    font: inherit;
-    font-weight: 600;
+/* Short link chip */
+.short-chip {
+    display: inline-block;
+    margin-right: 0.5rem;
+    padding: 0.25rem 0.6rem;
+    font-weight: 700;
     color: var(--accent);
-    background: none;
-    border: 0;
-    border-radius: 6px;
-    cursor: pointer;
+    background: #eef2ff;
+    border-radius: 999px;
+    text-decoration: none;
 }
 
-    .btn-link:hover {
-        background: #eef2ff;
+    .short-chip:hover {
+        background: #e0e7ff;
     }
 
-    .btn-link.danger {
-        color: var(--danger);
+/* Original URL: wraps instead of truncating */
+.dash-table .orig {
+    white-space: normal;
+    min-width: 280px;
+    width: 100%;
+}
+
+.orig-text {
+    display: block;
+    color: var(--ink-soft);
+    word-break: break-all;
+    line-height: 1.4;
+}
+
+/* Click count pill */
+.clicks {
+    display: inline-block;
+    min-width: 2rem;
+    padding: 0.15rem 0.55rem;
+    font-weight: 700;
+    text-align: center;
+    background: #f1f3f9;
+    border-radius: 999px;
+}
+
+/* ---------- Action buttons ---------- */
+.dash-table .actions {
+    text-align: right;
+}
+
+.act-group {
+    display: inline-flex;
+    gap: 0.4rem;
+}
+
+.act {
+    padding: 0.4rem 0.8rem;
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1.2;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+}
+
+    .act:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(47, 91, 255, 0.25);
     }
 
-        .btn-link.danger:hover {
-            background: var(--danger-bg);
-        }
+.act-primary {
+    color: #fff;
+    background: var(--accent);
+}
 
-    .btn-link.muted {
-        color: var(--ink-soft);
+    .act-primary:hover {
+        filter: brightness(0.92);
+    }
+
+.act-outline {
+    color: var(--ink);
+    background: var(--card);
+    border-color: var(--line);
+}
+
+    .act-outline:hover {
+        background: #f4f6fb;
+        border-color: #cfd5e3;
+    }
+
+.act-ghost {
+    color: var(--ink-soft);
+    background: #f1f3f9;
+}
+
+    .act-ghost:hover {
+        background: #e6e9f2;
+    }
+
+.act-danger {
+    color: var(--danger);
+    background: var(--danger-bg);
+}
+
+    .act-danger:hover {
+        filter: brightness(0.96);
+        border-color: var(--danger);
+    }
+
+.act-danger-solid {
+    color: #fff;
+    background: var(--danger);
+}
+
+    .act-danger-solid:hover {
+        filter: brightness(0.92);
     }
 
 @media (max-width: 640px) {

@@ -58,9 +58,9 @@ else
                 {
                     <tr @key="item.Id">
                         <td class="short">
-                            <a href="@FullShort(item)" target="_blank" rel="noopener">@ShortLabel(item)</a>
-                            <button class="btn-link" @onclick="() => Copy(item)">
-                                @(copiedId == item.Id ? "Copied" : "Copy")
+                            <a class="short-chip" href="@FullShort(item)" target="_blank" rel="noopener">@ShortLabel(item)</a>
+                            <button class="act act-ghost" @onclick="() => Copy(item)">
+                                @(copiedId == item.Id ? "Copied ✓" : "Copy")
                             </button>
                         </td>
                         <td class="orig">
@@ -70,28 +70,30 @@ else
                             }
                             else
                             {
-                                <span title="@item.OriginalUrl">@item.OriginalUrl</span>
+                                <span class="orig-text" title="@item.OriginalUrl">@item.OriginalUrl</span>
                             }
                         </td>
-                        <td class="num">@item.ClickCount</td>
+                        <td class="num"><span class="clicks">@item.ClickCount</span></td>
                         <td>@item.CreatedAt.ToLocalTime().ToString("MMM d, yyyy")</td>
                         <td>@(item.UpdatedAt is null ? "—" : item.UpdatedAt.Value.ToLocalTime().ToString("MMM d, yyyy"))</td>
                         <td class="actions">
-                            @if (editingId == item.Id)
-                            {
-                                <button class="btn-link" @onclick="() => SaveEdit(item)">Save</button>
-                                <button class="btn-link muted" @onclick="CancelEdit">Cancel</button>
-                            }
-                            else if (confirmDeleteId == item.Id)
-                            {
-                                <button class="btn-link danger" @onclick="() => Delete(item)">Yes, delete</button>
-                                <button class="btn-link muted" @onclick="() => confirmDeleteId = null">No</button>
-                            }
-                            else
-                            {
-                                <button class="btn-link" @onclick="() => StartEdit(item)">Edit</button>
-                                <button class="btn-link danger" @onclick="() => confirmDeleteId = item.Id">Delete</button>
-                            }
+                            <div class="act-group">
+                                @if (editingId == item.Id)
+                                {
+                                    <button class="act act-primary" @onclick="() => SaveEdit(item)">Save</button>
+                                    <button class="act act-ghost" @onclick="CancelEdit">Cancel</button>
+                                }
+                                else if (confirmDeleteId == item.Id)
+                                {
+                                    <button class="act act-danger-solid" @onclick="() => Delete(item)">Yes, delete</button>
+                                    <button class="act act-ghost" @onclick="() => confirmDeleteId = null">No</button>
+                                }
+                                else
+                                {
+                                    <button class="act act-outline" @onclick="() => StartEdit(item)">Edit</button>
+                                    <button class="act act-danger" @onclick="() => confirmDeleteId = item.Id">Delete</button>
+                                }
+                            </div>
                         </td>
                     </tr>
                 }
